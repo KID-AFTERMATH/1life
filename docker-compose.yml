@@ -14,5 +14,25 @@ services:
       - ./backend/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
       - ./backend/db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
 
+  backend:
+    build: ./backend
+    container_name: sb_backend
+    environment:
+      DATABASE_URL: postgres://app:app@db:5432/sentence_builder
+      PORT: 3000
+      CORS_ORIGIN: http://localhost:4200
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: sb_frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
 volumes:
   pgdata:
