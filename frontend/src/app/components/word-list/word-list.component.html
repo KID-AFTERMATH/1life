@@ -1,0 +1,15 @@
+<section class="panel">
+  <h2>2. Pick words</h2>
+
+  @if (!type) {
+    <p class="muted">Select a word type above to see options.</p>
+  } @else {
+    <div class="word-grid">
+      @for (w of words; track w.id) {
+        <button type="button" class="word-btn" (click)="add(w)">
+          {{ w.value }}
+        </button>
+      }
+    </div>
+  }
+</section>

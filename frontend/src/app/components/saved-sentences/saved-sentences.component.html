@@ -1,0 +1,19 @@
+<section class="panel">
+  <h2>4. Saved sentences</h2>
+
+  @if (sentences.length === 0) {
+    <p class="muted">No sentences saved yet.</p>
+  } @else {
+    <ul class="sentence-list">
+      @for (s of sentences; track s.id) {
+        <li>
+          <div class="text">{{ s.content }}</div>
+          <div class="meta">
+            <span>{{ s.updated_at | date:'short' }}</span>
+            <button type="button" (click)="edit(s)">Edit</button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

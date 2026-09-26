@@ -1,0 +1,29 @@
+:host {
+  display: block;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #0f172a;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.app-header {
+  padding: 1.5rem 1rem;
+  background: #1e293b;
+  color: #fff;
+  text-align: center;
+}
+
+.app-header h1 { margin: 0 0 0.25rem; font-size: 1.5rem; }
+.app-header p { margin: 0; color: #cbd5e1; font-size: 0.95rem; }
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .container { padding: 1rem 0.75rem; }
+  .app-header h1 { font-size: 1.25rem; }
+}

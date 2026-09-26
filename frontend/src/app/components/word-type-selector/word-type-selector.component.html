@@ -1,0 +1,15 @@
+<section class="panel">
+  <h2>1. Choose a word type</h2>
+  <div class="type-grid">
+    @for (t of types; track t.id) {
+      <button
+        type="button"
+        class="type-btn"
+        [class.active]="selectedId === t.id"
+        (click)="select(t)"
+      >
+        {{ t.name }}
+      </button>
+    }
+  </div>
+</section>

@@ -1,0 +1,48 @@
+<section class="panel">
+  <h2>3. Build your sentence</h2>
+
+  @if (words.length === 0) {
+    <p class="muted">Click words above to add them here.</p>
+  } @else {
+    <ol class="word-chips">
+      @for (w of words; track $index) {
+        <li>
+          <span class="chip">
+            {{ w.value }}
+            <button
+              type="button"
+              class="chip-remove"
+              title="Remove"
+              (click)="remove($index)"
+            >×</button>
+          </span>
+        </li>
+      }
+    </ol>
+
+    <p class="preview"><strong>Preview:</strong> {{ preview }}</p>
+  }
+
+  <div class="actions">
+    <button
+      type="button"
+      class="primary"
+      [disabled]="words.length === 0"
+      (click)="save()"
+    >
+      {{ editingId != null ? 'Update Sentence' : 'Save Sentence' }}
+    </button>
+    <button
+      type="button"
+      class="secondary"
+      [disabled]="words.length === 0"
+      (click)="clear()"
+    >
+      Clear
+    </button>
+  </div>
+
+  @if (statusMessage) {
+    <p class="status">{{ statusMessage }}</p>
+  }
+</section>

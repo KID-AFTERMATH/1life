@@ -1,0 +1,11 @@
+<header class="app-header">
+  <h1>Sentence Builder</h1>
+  <p>Choose a word type, pick words, and build a sentence.</p>
+</header>
+
+<main class="container">
+  <app-word-type-selector (typeSelected)="onTypeSelected($event)"></app-word-type-selector>
+  <app-word-list [type]="selectedType"></app-word-list>
+  <app-sentence-builder></app-sentence-builder>
+  <app-saved-sentences></app-saved-sentences>
+</main>
