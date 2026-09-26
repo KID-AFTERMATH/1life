@@ -70,4 +70,3 @@ Then open http://localhost:4200.
 - Save, list, edit sentences
 - Responsive layout
 - Dockerized
-- (Bonus) Azure deployment
