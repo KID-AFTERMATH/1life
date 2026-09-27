@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { WordTypeSelectorComponent } from './components/word-type-selector/word-type-selector.component';
 import { WordListComponent } from './components/word-list/word-list.component';
 import { SentenceBuilderComponent } from './components/sentence-builder/sentence-builder.component';
 import { SavedSentencesComponent } from './components/saved-sentences/saved-sentences.component';
+
 import { WordType } from './services/api.service';
 
 @Component({
@@ -22,7 +24,7 @@ import { WordType } from './services/api.service';
 export class AppComponent {
   selectedType: WordType | null = null;
 
-  onTypeSelected(t: WordType) {
-    this.selectedType = t;
+  onTypeSelected(type: WordType): void {
+    this.selectedType = type;
   }
 }
