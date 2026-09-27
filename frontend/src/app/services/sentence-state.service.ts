@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface SelectedWord {
   id: number;
@@ -7,39 +7,61 @@ export interface SelectedWord {
   typeName: string;
 }
 
+/**
+ * Holds the sentence currently being built (or edited).
+ * Shared between the word list, the builder, and the saved-list
+ * component so they stay in sync without prop drilling.
+ */
 @Injectable({ providedIn: 'root' })
 export class SentenceStateService {
-  // Currently building sentence — array of selected words in order.
-  private wordsSubject = new BehaviorSubject<SelectedWord[]>([]);
-  words$ = this.wordsSubject.asObservable();
+  private readonly wordsSubject = new BehaviorSubject<SelectedWord[]>([]);
+  private readonly editingIdSubject = new BehaviorSubject<number | null>(null);
 
-  // If editing an existing sentence, this holds its id.
-  private editingIdSubject = new BehaviorSubject<number | null>(null);
-  editingId$ = this.editingIdSubject.asObservable();
+  readonly words$: Observable<SelectedWord[]> = this.wordsSubject.asObservable();
+  readonly editingId$: Observable<number | null> =
+    this.editingIdSubject.asObservable();
 
-  addWord(word: SelectedWord) {
+  get words(): SelectedWord[] {
+    return this.wordsSubject.value;
+  }
+
+  get editingId(): number | null {
+    return this.editingIdSubject.value;
+  }
+
+  addWord(word: SelectedWord): void {
     this.wordsSubject.next([...this.wordsSubject.value, word]);
   }
 
-  removeAt(index: number) {
+  removeAt(index: number): void {
     const next = [...this.wordsSubject.value];
-    next.splice(index, 1);
-    this.wordsSubject.next(next);
+    if (index >= 0 && index < next.length) {
+      next.splice(index, 1);
+      this.wordsSubject.next(next);
+    }
   }
 
-  clear() {
+  clear(): void {
     this.wordsSubject.next([]);
     this.editingIdSubject.next(null);
   }
 
-  startEditing(id: number, sentenceText: string) {
-    // We only know the text, so we make "pseudo-words" — user can still edit.
-    const words = sentenceText.split(/\s+/).map((value, i) => ({
-      id: -i - 1, // negative to mark as pseudo
-      value,
-      typeName: 'Edited',
-    }));
-    this.wordsSubject.next(words);
+  /**
+   * Loads an existing sentence into the builder.
+   * The raw text is split into pseudo-words so the user can still
+   * remove or reorder them.
+   */
+  startEditing(id: number, sentenceText: string): void {
+    const pseudoWords: SelectedWord[] = sentenceText
+      .split(/\s+/)
+      .filter((token) => token.length > 0)
+      .map((value, index) => ({
+        id: -1 - index, // negative ids mark pseudo-words
+        value,
+        typeName: 'Edited',
+      }));
+
+    this.wordsSubject.next(pseudoWords);
     this.editingIdSubject.next(id);
   }
 
