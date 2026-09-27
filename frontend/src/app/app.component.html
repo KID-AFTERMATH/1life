@@ -1,11 +1,22 @@
 <header class="app-header">
-  <h1>Sentence Builder</h1>
-  <p>Choose a word type, pick words, and build a sentence.</p>
+  <div class="header-inner">
+    <h1>Sentence Builder</h1>
+    <p>Choose a word type, pick words, and build a sentence.</p>
+  </div>
 </header>
 
 <main class="container">
-  <app-word-type-selector (typeSelected)="onTypeSelected($event)"></app-word-type-selector>
+  <app-word-type-selector
+    (typeSelected)="onTypeSelected($event)"
+  ></app-word-type-selector>
+
   <app-word-list [type]="selectedType"></app-word-list>
+
   <app-sentence-builder></app-sentence-builder>
+
   <app-saved-sentences></app-saved-sentences>
 </main>
+
+<footer class="app-footer">
+  <small>Full-Stack Technical Assessment &middot; Angular 18 + Express + PostgreSQL</small>
+</footer>
