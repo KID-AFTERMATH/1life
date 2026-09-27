@@ -1,15 +1,26 @@
 <section class="panel">
-  <h2>1. Choose a word type</h2>
-  <div class="type-grid">
-    @for (t of types; track t.id) {
-      <button
-        type="button"
-        class="type-btn"
-        [class.active]="selectedId === t.id"
-        (click)="select(t)"
-      >
-        {{ t.name }}
-      </button>
-    }
-  </div>
+  <header class="panel-header">
+    <span class="step">1</span>
+    <h2>Choose a word type</h2>
+  </header>
+
+  @if (loading) {
+    <p class="muted">Loading word types…</p>
+  } @else if (error) {
+    <p class="error">Could not load word types: {{ error }}</p>
+  } @else {
+    <div class="type-grid" role="group" aria-label="Word types">
+      @for (t of types; track t.id) {
+        <button
+          type="button"
+          class="type-btn"
+          [class.active]="selectedId === t.id"
+          [attr.aria-pressed]="selectedId === t.id"
+          (click)="select(t)"
+        >
+          {{ t.name }}
+        </button>
+      }
+    </div>
+  }
 </section>
