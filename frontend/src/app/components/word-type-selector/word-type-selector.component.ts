@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { ApiService, WordType } from '../../services/api.service';
 
 @Component({
@@ -14,14 +15,26 @@ export class WordTypeSelectorComponent implements OnInit {
 
   types: WordType[] = [];
   selectedId: number | null = null;
+  loading = false;
+  error: string | null = null;
 
   constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    this.api.getWordTypes().subscribe((types) => (this.types = types));
+    this.loading = true;
+    this.api.getWordTypes().subscribe({
+      next: (types) => {
+        this.types = types;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = err.message;
+        this.loading = false;
+      },
+    });
   }
 
-  select(type: WordType) {
+  select(type: WordType): void {
     this.selectedId = type.id;
     this.typeSelected.emit(type);
   }
