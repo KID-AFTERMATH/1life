@@ -1,5 +1,11 @@
 <section class="panel">
-  <h2>3. Build your sentence</h2>
+  <header class="panel-header">
+    <span class="step">3</span>
+    <h2>Build your sentence</h2>
+    @if (editingId != null) {
+      <span class="badge editing">Editing #{{ editingId }}</span>
+    }
+  </header>
 
   @if (words.length === 0) {
     <p class="muted">Click words above to add them here.</p>
@@ -13,6 +19,7 @@
               type="button"
               class="chip-remove"
               title="Remove"
+              [attr.aria-label]="'Remove ' + w.value"
               (click)="remove($index)"
             >×</button>
           </span>
@@ -27,15 +34,15 @@
     <button
       type="button"
       class="primary"
-      [disabled]="words.length === 0"
+      [disabled]="words.length === 0 || saving"
       (click)="save()"
     >
-      {{ editingId != null ? 'Update Sentence' : 'Save Sentence' }}
+      {{ saving ? 'Saving…' : (editingId != null ? 'Update Sentence' : 'Save Sentence') }}
     </button>
     <button
       type="button"
       class="secondary"
-      [disabled]="words.length === 0"
+      [disabled]="words.length === 0 || saving"
       (click)="clear()"
     >
       Clear
@@ -43,6 +50,9 @@
   </div>
 
   @if (statusMessage) {
-    <p class="status">{{ statusMessage }}</p>
+    <p class="status success">{{ statusMessage }}</p>
+  }
+  @if (errorMessage) {
+    <p class="status error">{{ errorMessage }}</p>
   }
 </section>
