@@ -1,7 +1,17 @@
 <section class="panel">
-  <h2>4. Saved sentences</h2>
+  <header class="panel-header">
+    <span class="step">4</span>
+    <h2>Saved sentences</h2>
+    <button type="button" class="refresh" (click)="refresh()" title="Refresh">
+      ↻
+    </button>
+  </header>
 
-  @if (sentences.length === 0) {
+  @if (loading) {
+    <p class="muted">Loading…</p>
+  } @else if (error) {
+    <p class="error">{{ error }}</p>
+  } @else if (sentences.length === 0) {
     <p class="muted">No sentences saved yet.</p>
   } @else {
     <ul class="sentence-list">
@@ -9,8 +19,13 @@
         <li>
           <div class="text">{{ s.content }}</div>
           <div class="meta">
-            <span>{{ s.updated_at | date:'short' }}</span>
-            <button type="button" (click)="edit(s)">Edit</button>
+            <span class="timestamp">{{ s.updated_at | date:'short' }}</span>
+            <button type="button" class="action" (click)="edit(s)">Edit</button>
+            <button
+              type="button"
+              class="action danger"
+              (click)="remove(s)"
+            >Delete</button>
           </div>
         </li>
       }
