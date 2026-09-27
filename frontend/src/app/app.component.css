@@ -1,29 +1,52 @@
 :host {
-  display: block;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  color: #0f172a;
-  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
 .app-header {
-  padding: 1.5rem 1rem;
-  background: #1e293b;
+  background: linear-gradient(135deg, #1e293b, #334155);
   color: #fff;
+  padding: 1.75rem 1rem;
+}
+
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
   text-align: center;
 }
 
-.app-header h1 { margin: 0 0 0.25rem; font-size: 1.5rem; }
-.app-header p { margin: 0; color: #cbd5e1; font-size: 0.95rem; }
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1.5rem 1rem;
+.app-header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.65rem;
+  letter-spacing: -0.01em;
 }
 
-/* Responsive tweaks */
+.app-header p {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.container {
+  flex: 1;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.75rem 1rem 2.5rem;
+}
+
+.app-footer {
+  padding: 1rem;
+  text-align: center;
+  color: #64748b;
+  border-top: 1px solid #e2e8f0;
+  background: #fff;
+}
+
 @media (max-width: 600px) {
-  .container { padding: 1rem 0.75rem; }
-  .app-header h1 { font-size: 1.25rem; }
+  .app-header { padding: 1.25rem 0.75rem; }
+  .app-header h1 { font-size: 1.3rem; }
+  .app-header p { font-size: 0.85rem; }
+  .container { padding: 1.25rem 0.75rem 2rem; }
 }
