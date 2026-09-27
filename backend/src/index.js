@@ -1,38 +1,68 @@
+/**
+ * Application entry point.
+ * Wires middleware, mounts routers, and starts the HTTP server.
+ */
 require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 
+const logger = require('./middleware/logger');
+const errorHandler = require('./middleware/errorHandler');
+const notFound = require('./middleware/notFound');
+
+const wordTypesRouter = require('./routes/wordTypes');
+const wordsRouter = require('./routes/words');
+const sentencesRouter = require('./routes/sentences');
+
 const app = express();
 
-// Allow the Angular dev server to call us
+// --- Global middleware ---
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
+  origin: (process.env.CORS_ORIGIN || '*').split(',').map((s) => s.trim()),
+  credentials: true,
 }));
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ extended: false }));
+app.use(logger);
 
-// Parse JSON bodies on POST/PUT
-app.use(express.json());
-
-// Simple request logger — nice for demos
-app.use((req, _res, next) => {
-  console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
-  next();
+// --- Routes ---
+app.get('/health', (_req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
 });
 
-// Mount routers under /api
-app.use('/api/word-types', require('./routes/wordTypes'));
-app.use('/api/words', require('./routes/words'));
-app.use('/api/sentences', require('./routes/sentences'));
+app.use('/api/word-types', wordTypesRouter);
+app.use('/api/words', wordsRouter);
+app.use('/api/sentences', sentencesRouter);
 
-// Health endpoint (useful for Azure / Docker checks)
-app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+// --- Fallthrough handlers (must come last) ---
+app.use(notFound);
+app.use(errorHandler);
 
-// Central error handler. Any next(err) lands here.
-app.use((err, _req, res, _next) => {
-  console.error(err);
-  res.status(500).json({ error: 'Internal server error' });
+// --- Start server ---
+const port = Number(process.env.PORT) || 3000;
+
+const server = app.listen(port, () => {
+  console.log(`[api] listening on http://localhost:${port}`);
+  console.log(`[api] env: ${process.env.NODE_ENV || 'development'}`);
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`API listening on http://localhost:${port}`);
-});
+// Graceful shutdown so Docker stop signals are handled cleanly
+const shutdown = (signal) => {
+  console.log(`[api] received ${signal}, shutting down...`);
+  server.close(() => {
+    console.log('[api] closed');
+    process.exit(0);
+  });
+  // Force exit if connections hang
+  setTimeout(() => process.exit(1), 10000).unref();
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
+module.exports = app; // exported for tests
