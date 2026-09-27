@@ -1,11 +1,20 @@
 {
   "name": "sentence-builder-backend",
   "version": "1.0.0",
+  "description": "Express API for the Sentence Builder application",
   "main": "src/index.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "migrate": "node scripts/migrate.js",
+    "test": "jest"
   },
+  "keywords": ["express", "postgres", "sentence-builder"],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -13,6 +22,8 @@
     "pg": "^8.11.5"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.0.0"
   }
 }
