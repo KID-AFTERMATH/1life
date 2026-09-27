@@ -1,22 +1,29 @@
 const router = require('express').Router();
-const pool = require('../db');
+const { query } = require('../db');
 
-// GET /api/words?typeId=3
-// Returns all words for the given word type.
+/**
+ * GET /api/words?typeId=<number>
+ * Returns all words belonging to the specified word type.
+ */
 router.get('/', async (req, res, next) => {
   try {
-    const { typeId } = req.query;
+    const typeId = Number(req.query.typeId);
 
-    if (!typeId) {
-      return res.status(400).json({ error: 'typeId query parameter is required' });
+    if (!Number.isInteger(typeId) || typeId <= 0) {
+      return res
+        .status(400)
+        .json({ error: 'typeId query parameter must be a positive integer' });
     }
 
-    const result = await pool.query(
-      'SELECT id, value, type_id FROM words WHERE type_id = $1 ORDER BY value',
+    const { rows } = await query(
+      `SELECT id, value, type_id
+         FROM words
+        WHERE type_id = $1
+        ORDER BY value ASC`,
       [typeId]
     );
 
-    res.json(result.rows);
+    res.json(rows);
   } catch (err) {
     next(err);
   }
